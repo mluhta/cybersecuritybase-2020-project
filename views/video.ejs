@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VideoTube - <%= video.title %></title>
+    <%- include('head'); %>
+  </head>
+  <body>
+    <%- include('navbar', {user}); %>
+    <div class="container pt-3">
+      <div class="row">
+        <div class="col">
+          <h1><%= video.title %></h1>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= video.youtubeId %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="col">
+          <h3>Details</h3>
+          <ul>
+            <li>Uploaded by <%= video.username %></li>
+            <li>Uploaded on <%= new Date(video.uploadDate).toLocaleString('fi-FI', {timeZone: 'UTC'}) %></li>
+          </ul>
+          <p><%= video.description %></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

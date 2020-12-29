@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VideoTube - Add Video</title>
+    <%- include('head'); %>
+  </head>
+  <body>
+      <%- include('navbar', {user}); %>
+      <div class="container pt-3">
+        <div class="row">
+          <div class="col">
+            <h1>Add Video</h1>
+            <% if (message) { %>
+              <div class="alert <%= message.className %>" role="alert">
+                <%= message.message %>
+              </div>
+            <% } %>              
+
+            <form action="/videos" method="POST">
+              <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" name="title" class="form-control" id="title"/>
+              </div>
+              <div class="mb-3">
+                <label for="youtubeId" class="form-label">Youtube ID</id></label>
+                <input type="text" name="youtubeId" class="form-control" id="youtubeId"/>
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</id></label>
+                <input type="text" name="description" class="form-control" id="description"/>
+              </div>
+              <button type="submit" class="btn btn-success">Add</button>
+          </form>
+          </div>
+        </div>
+      </div>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VideoTube - User Profile</title>
+    <%- include('head'); %>
+  </head>
+  <body>
+    <%- include('navbar', {user}); %>
+    <div class="container pt-3">
+      <div class="row">
+        <div class="col">
+          <h1>User Profile</h1>
+          <ul>
+            <li>User ID: <%= user.id %></li>
+            <li>Username: <%= user.username %></li>
+            <li><button onclick="logout()">Logout</button></li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="d-flex w-100 justify-content-between mb-1">
+            <h2>Videos</h2>
+            <button type="button" class="btn btn-success" onclick="profileAddVideo()">Add</button>
+          </div>
+          
+          <div class="list-group">
+            <% videos.forEach(video => { %>
+              <div class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1"><a href="/videos/<%= video.id %>"><%= video.title  %></a></h5>
+                  <small>3 days ago</small>
+                </div>
+                <p class="mb-1"><%= video.description %></p>
+                <div class="d-flex justify-content-between">
+                  <small>Uploaded by <%= video.username %></small>
+                  <span class="btn btn-xs btn-danger" onclick="deleteVideo(<%= video.id %>)">Delete</span>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h2>Login Sessions</h2>
+          <ul>
+            <% sessions.forEach(session => { %>
+            <li>ID: <%= session.id %> - <%= session.active === 1 ? 'active' : 'inactive' %></li>
+            <% }); %>
+          </ul>
+          <div class="alert alert-warning">
+            Don't share your session IDs! They can be used to hijack your account!
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

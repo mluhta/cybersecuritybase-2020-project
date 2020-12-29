@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VideoTube</title>
+    <%- include('head'); %>
+  </head>
+  <body>
+    <%- include('navbar', {user}); %>
+    <div class="container pt-3">
+      <div class="row">
+        <div class="col">
+          <h1>VideoTube</h1>
+          <p>Welcome to VideoTube, a free video sharing website.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h3>Recently uploaded</h1>
+          <div class="row">
+            <% videos.forEach(video => { %>
+              <div class="col">
+                <a href="/videos/<%= video.id %>">
+                  <div class="card">
+                    <img src="https://img.youtube.com/vi/<%= video.youtubeId %>/hqdefault.jpg" class="card-img-top">
+                    <div class="card-body">
+                      <h5 class="card-title"><%= video.title %></h5>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
