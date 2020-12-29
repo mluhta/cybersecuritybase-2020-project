@@ -17,42 +17,51 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Authentication
+/**
+ * Generates a new session in the DB and set's the session cookie
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+function newSession(req, res, next) {
+  db.run('INSERT INTO sessions DEFAULT VALUES', function (err) {
+    if (err)
+      return next(err);
+    res.cookie("my-session", this.lastID);
+    req.session = this.lastID;
+    return next();
+  });
+}
+
+// Authentication middleware
 app.use((req, res, next) => {
   const sessionId = req.cookies["my-session"];
   req.session = sessionId;
 
   if (sessionId) {
-    console.log('sessionId')
-    // Session exists, let's search for it
-    db.all(`SELECT U.id, U.username FROM sessions AS S
-            LEFT JOIN users AS U ON S.user_id=U.id
-            WHERE S.user_id IS NOT NULL
-            AND S.id=? AND S.active=1`, [sessionId], (err, rows) => {
+    // Session cookie exists, let's search for it
+    db.all(`SELECT id FROM sessions WHERE id=?`, [sessionId], (err, rows) => {
       if (err)
-        next(err);
-      else if (rows.length > 0) {
-        console.log("Session with a user found from db!!")
-        console.log(rows[0]);
-        req.user = rows[0];
-        next();
+        return next(err);
+      if (rows.length) {
+        // Session ID was found from the DB, check if it's logged in
+        db.all(`SELECT U.id, U.username FROM sessions AS S
+                LEFT JOIN users AS U ON S.user_id=U.id
+                WHERE S.user_id IS NOT NULL AND S.id=? AND S.active=1`, [sessionId], (err, rows) => {
+                  if (err)
+                    return next(err);
+                  if (rows.length)
+                    req.user = rows[0];  // Logged in session found, set the user
+                  return next();
+                });
+      } else {
+        // Session ID was not found from the DB, create new session
+        return newSession(req, res, next);
       }
-      else
-        next(); // Client has session, but not logged in
-    });
-  } else {
-    // Session token doesn't exist, let's generate one
-    db.run('INSERT INTO sessions DEFAULT VALUES', function (err) {
-      if (err)
-        next(err);
-      else {
-        res.cookie("my-session", this.lastID);
-        req.session = this.lastID;
-        next();
-      }
-    });
-  };
-})
+    })
+  } else
+    return newSession(req, res, next); // Session cookie doesn't exist, create new session
+});
 
 app.use('/', require('./routes'));
 app.use('/', require('./routes/auth'));
