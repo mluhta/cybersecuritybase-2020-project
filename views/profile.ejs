@@ -29,7 +29,7 @@
               <div class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1"><a href="/videos/<%= video.id %>"><%= video.title  %></a></h5>
-                  <small>3 days ago</small>
+                  <small><%= new Date(video.uploadDate).toLocaleString('fi-FI', {timeZone: 'UTC'}) %></small>
                 </div>
                 <p class="mb-1"><%= video.description %></p>
                 <div class="d-flex justify-content-between">
